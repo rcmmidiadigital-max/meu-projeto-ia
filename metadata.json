@@ -1,0 +1,5 @@
+{
+  "name": "Portal do Centro Empresarial",
+  "description": "A multi-tenant MVP for business center management, featuring public listings, rental opportunities, and an internal community dashboard. Inspired by modern city guide interfaces.",
+  "requestFramePermissions": []
+}
