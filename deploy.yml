@@ -1,0 +1,41 @@
+name: Build and publish to deploy branch
+
+on:
+  push:
+    branches: [ main ]  # roda sempre que houver push na main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout fonte
+        uses: actions/checkout@v4
+
+      - name: Usar Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Build do Vite
+        run: npm run build
+
+      # (Opcional, mas recomendado para SPA/React Router)
+      - name: Adicionar .htaccess ao dist
+        run: |
+          cat > dist/.htaccess << 'EOF'
+          RewriteEngine On
+          RewriteCond %{REQUEST_FILENAME} !-f
+          RewriteCond %{REQUEST_FILENAME} !-d
+          RewriteRule ^ index.html [L]
+          EOF
+
+      # Publica SOMENTE o conteúdo do dist/ na branch "deploy"
+      - name: Publicar na branch deploy (conteúdo = dist/)
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: deploy
+          clean: true
